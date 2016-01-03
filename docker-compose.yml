@@ -1,5 +1,5 @@
 postgresql:
-  image: sameersbn/postgresql:9.4-11
+  image: anselmos/postgresql32:latest
   environment:
     - DB_USER=redmine
     - DB_PASS=password
@@ -8,7 +8,7 @@ postgresql:
     - /srv/docker/redmine/postgresql:/var/lib/postgresql
 
 redmine:
-  image: sameersbn/redmine:3.2.0-2
+  image: anselmos/redmine32:latest
   links:
     - postgresql:postgresql
   environment:
