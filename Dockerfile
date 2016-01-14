@@ -1,7 +1,44 @@
-FROM anselmos/ubuntu32:improved
+FROM hypriot/rpi-mysql
 MAINTAINER sameer@damagehead.com
 
-ENV REDMINE_VERSION=3.2.0 \
+RUN apt-get update -y
+RUN apt-get install -y apache2
+RUN apt-get install -y mysql-server
+RUN apt-get install -y curl
+RUN apt-get install -y aptitude
+RUN aptitude install -y supervisor logrotate nginx mysql-client postgresql-client 
+RUN aptitude install -y imagemagick 
+RUN aptitude install -y subversion 
+RUN aptitude install -y git 
+RUN aptitude install -y cvs 
+RUN aptitude install -y bzr 
+RUN aptitude install -y mercurial 
+RUN aptitude install -y darcs 
+RUN aptitude install -y rsync 
+RUN aptitude install -y ruby2.1 
+RUN aptitude install -y locales 
+RUN aptitude install -y openssh-client
+RUN aptitude install -y gcc 
+RUN aptitude install -y g++ 
+RUN aptitude install -y make 
+RUN aptitude install -y patch 
+RUN aptitude install -y pkg-config 
+RUN aptitude install -y gettext-base 
+RUN aptitude install -y ruby2.1-dev 
+RUN aptitude install -y libc6-dev 
+RUN aptitude install -y zlib1g-dev 
+RUN aptitude install -y libxml2-dev
+RUN aptitude install -y libmysqlclient18 
+RUN aptitude install -y libpq5 
+RUN aptitude install -y libyaml-0-2 
+RUN aptitude install -y libcurl3 
+RUN aptitude install -y libssl1.0.0
+RUN aptitude install -y libxslt1.1 
+RUN aptitude install -y libffi6 
+RUN aptitude install -y zlib1g 
+RUN aptitude install -y gsfonts 
+
+ENV REDMINE_VERSION=3.1.3 \
     REDMINE_USER="redmine" \
     REDMINE_HOME="/home/redmine" \
     REDMINE_LOG_DIR="/var/log/redmine" \
@@ -13,25 +50,11 @@ ENV REDMINE_INSTALL_DIR="${REDMINE_HOME}/redmine" \
     REDMINE_BUILD_DIR="${REDMINE_CACHE_DIR}/build" \
     REDMINE_RUNTIME_DIR="${REDMINE_CACHE_DIR}/runtime"
 
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv E1DD270288B4E6030699E45FA1715D88E1DF1F24 \
- && echo "deb http://ppa.launchpad.net/git-core/ppa/ubuntu trusty main" >> /etc/apt/sources.list \
- && apt-key adv --keyserver keyserver.ubuntu.com --recv 80F70E11F0F0D5F10CB20E62F5DA5F09C3173AA6 \
- && echo "deb http://ppa.launchpad.net/brightbox/ruby-ng/ubuntu trusty main" >> /etc/apt/sources.list \
- && apt-key adv --keyserver keyserver.ubuntu.com --recv 8B3981E7A6852F782CC4951600A6F0A3C300EE8C \
- && echo "deb http://ppa.launchpad.net/nginx/stable/ubuntu trusty main" >> /etc/apt/sources.list \
- && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
- && echo 'deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main' > /etc/apt/sources.list.d/pgdg.list \
- && apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y supervisor logrotate nginx mysql-client postgresql-client \
-      imagemagick subversion git cvs bzr mercurial darcs rsync ruby2.1 locales openssh-client \
-      gcc g++ make patch pkg-config gettext-base ruby2.1-dev libc6-dev zlib1g-dev libxml2-dev \
-      libmysqlclient18 libpq5 libyaml-0-2 libcurl3 libssl1.0.0 \
-      libxslt1.1 libffi6 zlib1g gsfonts \
- && update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX \
- && gem install --no-document bundler \
- && rm -rf /var/lib/apt/lists/*
+
 
 COPY assets/build/ ${REDMINE_BUILD_DIR}/
+
+RUN apt-get install -y wget tar
 RUN bash ${REDMINE_BUILD_DIR}/install.sh
 
 COPY assets/runtime/ ${REDMINE_RUNTIME_DIR}/
